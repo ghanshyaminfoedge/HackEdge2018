@@ -1,16 +1,21 @@
 var numTimes = 5;
+var current = 0;
 var keyStrokeMetricsDataArray = [];
 var KSD_FIELD_ID = "keyphrase";
+var keyPhraseArr = [];
 $( document ).ready(function() {
  	$('#createProfile').attr("disabled", true);
 });
 
 $('#next').on('click', function() {
-	markStepCompletion();
-	if(numTimes == 0) {
-		$('#next').attr("disabled", true);
-		$('#createProfile').attr("disabled", false);
-	}
+    var max = keyLogs['#keyphrase'].length;
+    keyPhraseArr.push(keyLogs['#keyphrase'].slice(current, max));
+    current = max;
+    markStepCompletion();
+    if(numTimes == 0) {
+        $('#next').attr("disabled", true);
+        $('#createProfile').attr("disabled", false);
+    }
 });
 
 $( "#createProfile" ).on('click', function() {

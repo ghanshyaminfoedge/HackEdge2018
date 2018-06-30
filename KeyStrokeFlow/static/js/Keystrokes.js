@@ -13,6 +13,7 @@ $('#next, #login ').on('click', function() {
     keyPhraseArr.push(keyLogs['#keyphrase'].slice(current, max));
     current = max;
     markStepCompletion();
+    postLogin();
     if(numTimes == 0) {
         $('#next').attr("disabled", true);
         $('#createProfile').attr("disabled", false);
@@ -22,6 +23,9 @@ $("#autoFill").on('click',function(){
 	$("#username").val("sonakshi");	
 	$("#password").val("sonakshi");
 	$("#keyphrase").val("sonakshi");
+	$res =  postLogin();
+	//$res = {"totalScore": "10.5"};
+	$("#ubaScore").val($res.totalScore);
 })
 $( "#createProfile, #login" ).on('click', function() {
 	//removing hash for phase - 1

@@ -27,17 +27,13 @@ class Welcome extends CI_Controller {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $keyPhrase = $_POST['keyPhrase'];
-        if (1 || $username && $password) {
-            if (1 || $password === "asdasd") {
+        if ($username && $password) {
                 if($keyPhrase){
                     $fileName = "/data/training_".$username."_".$password.".txt";
                     file_put_contents("/data/test.txt", $keyPhrase);
                     $this->savePattern($fileName);
                 }
                 $this->load->view('login');//redirect("http://localhost:8000/index.php/login");
-            } else {
-                $this->showError();
-            }
         } else {
             $this->showError();
         }
@@ -47,8 +43,10 @@ class Welcome extends CI_Controller {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $keyPhrase = $_POST['keyPhrase'];
-        if (1 || $username && $password) {
-            if (1 || $password === "asdasd") {
+	$ubaScore = $_POST['ubaScore'];
+	if($ubaScore <= 70)
+		 $this->showError($ubaScore);
+        else if ($username && $password) {
                 if($keyPhrase){
                     $fileName = "/data/current_attempt_".$username."_".$password.".txt";
                     file_put_contents("/data/test.txt", $keyPhrase);
@@ -61,9 +59,6 @@ class Welcome extends CI_Controller {
                 } else {
                     $this->showError();
                 }
-            } else {
-                $this->showError();
-            }
         } else {
             $this->showError();
         }
@@ -80,9 +75,10 @@ class Welcome extends CI_Controller {
         $output = $this->curl->simple_get($url, $post_data);*/
     }
     
-    private function showError() {
+    private function showError($ubaScore = "") {
         $data['heading'] = "Unauthorized user";
-        $data['message'] = "Incorrect credentials, please try again!";
+	if($ubaScore)  $data['message'] = "You are not genuine user. your Score is " .$ubaScore;
+        else $data['message'] = "Incorrect credentials, please try again!";
         $this->load->view('errors/html/error_general', $data);
     }
 

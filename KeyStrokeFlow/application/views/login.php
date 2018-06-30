@@ -37,15 +37,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
-                     <form id="loginForm" method="POST" action="/login/perform">
-                        <input class="form-control" type="text" placeholder="Enter Username" aria-label="UserName" name="username">
-                        <input class="form-control" type="password" placeholder="Enter password" aria-label="Password" name="password">
+                     <form id="loginForm" method="POST" action="/welcome/validate">
+                        <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName">
+                        <input class="form-control" name="password" type="password" placeholder="Choose a password" aria-label="Password">
+                        <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
+                        <input class="form-control" type="password" placeholder="Enter key phrase" id="keyphrase" aria-label="Enter key phrase">
                         <button class="btn mt10 pull-right btn-success" id="login" type="submit">Login to Resdex</button>
                     </form>
                 </div>
             </div>
         </div>
 	</body>
-    <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
+        <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
 	<script src="<?php echo base_url(); ?>static/js/KeystrokeDynamics.js"></script>
 </html>

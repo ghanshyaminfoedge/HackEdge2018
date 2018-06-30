@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 	<body>
-	   	<div class="container-fluid">
+	   <div class="container-fluid">
             <div class="">
                 <nav class="navbar navbar-default">
                     <div class="container-fluid">
@@ -37,13 +37,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
-                    <form id="loginForm">
-                        <input class="form-control" type="text" placeholder="Create Username" aria-label="UserName">
-                        <input class="form-control" type="password" placeholder="Choose a password" aria-label="Password">
-                        <input type="hidden" value="" id="keyPhraseLog">
+                    <form id="loginForm" action="/welcome/create" method="POST">
+                        <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName">
+                        <input class="form-control" name="password" type="password" placeholder="Choose a password" aria-label="Password">
+                        <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
                         <input class="form-control" type="password" placeholder="Confirm password" id="keyphrase" aria-label="Confirm Password">
                         <button type="button" class="btn mt10 btn-primary" id="next">Next</button>
-                        <button class="btn mt10 pull-right btn-success" id="createProfile" type="">Create Profile</button>
+                        <button class="btn mt10 pull-right btn-success" id="createProfile" type="submit">Create Profile</button>
                     </form>
                 </div>
             </div>

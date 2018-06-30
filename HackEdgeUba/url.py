@@ -3,6 +3,7 @@ import csv
 from sklearn.cluster import DBSCAN
 import statistics
 import math
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -66,7 +67,7 @@ def post():
         counter += 1
     if counter < minimumSampleRequired:
         writeTrainData(time_on_page, furthest_scroll_position, click_count)
-        return str("appa check nai kita")
+        return str("100")
 
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
@@ -95,6 +96,11 @@ def post():
 
     totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
 
+    plt.axis([0, 10, 0, max([x for x, y in pageTimeData])])
+    print(pageTimeData)
+    plt.scatter([x for x, y in pageTimeData], [y for x, y in pageTimeData], c="blue")
+    #plt.scatter([x for x in test_data], [x for x in test_data], c="red")
+    plt.show()
     if (totalScore >= thresholdScore):
         writeTrainData(time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()

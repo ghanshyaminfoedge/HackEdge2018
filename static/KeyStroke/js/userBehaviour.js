@@ -58,9 +58,10 @@ function postLogin() {
                 data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
         });
         request.done(function( msg ) {
-		var responseDBLogin = JSON.stringify(msg);
+		alert(msg.totalScore);
         })
         request.fail(function( jqXHR, textStatus ) {
+		alert("OKKKKKKKK");
         });
 
 }

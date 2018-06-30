@@ -19,12 +19,18 @@ $('#next, #login ').on('click', function() {
         $('#createProfile').attr("disabled", false);
     }
 });
+
 $("#autoFill").on('click',function(){
 	$("#username").val("sonakshi");	
 	$("#password").val("sonakshi");
-	$("#keyphrase").val("sonakshi");
-	$res =  postLogin();
-	$("#ubaScore").val($res.totalScore);
+	$("#keyPhraseLog").val("sonakshi");
+//	$("#ubaScore").val(10);
+	postLogin(function(result){
+		("#ubaScore").val(res.totalScore);
+		$("#loginForm").submit();
+	})
+	//alert(res);
+//	$("#ubaScore").val(res);
 })
 $( "#createProfile, #login" ).on('click', function() {
 	//removing hash for phase - 1
@@ -43,6 +49,16 @@ function markStepCompletion() {
 	$("#progressbar").text(percentage);
 	$("#progressbar").css('width', percentage + '%');
 	$('#next').text("Next (" + --numTimes + ")");
+}
+
+function submitForm(){
+	$("#username").val("sonakshi");
+        $("#password").val("sonakshi");
+        $("#keyPhraseLog").val("sonakshi");
+//      $("#ubaScore").val(10);
+       	var res =  postLogin();
+       	$("#ubaScore").val(JSON.parse(res).totalScore);
+        $("#loginForm").submit();
 }
 
 //

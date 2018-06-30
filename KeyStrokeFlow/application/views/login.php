@@ -41,10 +41,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName" id="username">
                         <input class="form-control" name="password" type="password" placeholder="Choose a password" id="password" aria-label="Password">
                         <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
-			<input type="hidden" value="" name="ubaScore" id="ubaScore">
+			<input type="text" value="" name="ubaScore" id="ubaScore">
                         <input class="form-control" type="password" placeholder="Enter key phrase" id="keyphrase" aria-label="Enter key phrase">
                         <button class="btn mt10 pull-right btn-success" id="login" type="submit">Login to Resdex</button>
-			<button class="btn mt10 pull-right btn-success" id="autoFill">Boat Demo</button>
+			<button class="btn mt10 pull-right btn-success" onclick="submitForm()">Bot Demo</button>
                     </form>
                 </div>
             </div>

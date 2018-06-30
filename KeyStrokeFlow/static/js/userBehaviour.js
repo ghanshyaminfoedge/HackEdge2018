@@ -50,17 +50,12 @@ function postBlog() {
 
 function postLogin() {
         timeOnPage = (new Date()) - pageEntryTime;
-         var request = $.ajax({
+         return $.ajax({
                 method: "POST",
                 url: "http://localhost:5000/user/login",
                 contentType: "application/json",
                 dataType:"json",
+		async:false,
                 data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
-        });
-        request.done(function( msg ) {
-		var responseDBLogin = JSON.stringify(msg);
-        })
-        request.fail(function( jqXHR, textStatus ) {
-        });
-
+        }).responseText;
 }

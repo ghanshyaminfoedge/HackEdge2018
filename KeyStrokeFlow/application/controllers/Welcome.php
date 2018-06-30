@@ -43,7 +43,7 @@ class Welcome extends CI_Controller {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $keyPhrase = $_POST['keyPhrase'];
-	$ubaScore = $_POST['ubaScore'];
+	$ubaScore = $_POST['ubaScore']== "" ? 100:$_POST['ubaScore'];
 	if($ubaScore <= 70)
 		 $this->showError($ubaScore);
         else if ($username && $password) {
@@ -53,8 +53,7 @@ class Welcome extends CI_Controller {
                     $this->savePattern($fileName);
                 }
                 $response = $this->validatePattern($username, $password);
-                echo $response;die;
-                if($response > 50) {
+                if($response == 1) {
                     $this->load->view('home');
                 } else {
                     $this->showError();
@@ -66,7 +65,6 @@ class Welcome extends CI_Controller {
     
     private function validatePattern($username, $password) {
         $ch = curl_init("http://localhost:5000/keystroke/api/score?userName=" . $username . "&keyPass=" . $password);
-
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $response = curl_exec($ch);
         curl_close($ch);

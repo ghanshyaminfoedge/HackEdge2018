@@ -13,7 +13,7 @@ $('#next, #login ').on('click', function() {
     keyPhraseArr.push(keyLogs['#keyphrase'].slice(current, max));
     current = max;
     markStepCompletion();
-    postLogin();
+//    postLogin();
     if(numTimes == 0) {
         $('#next').attr("disabled", true);
         $('#createProfile').attr("disabled", false);

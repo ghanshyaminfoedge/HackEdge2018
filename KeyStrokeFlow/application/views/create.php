@@ -37,7 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
-                    <form id="loginForm" action="/welcome/create" method="POST">
+                    <form id="loginForm" action="http://localhost/HackEdge2018/KeyStrokeFlow/index.php/welcome/create" method="POST">
                         <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName">
                         <input class="form-control" name="password" type="password" placeholder="Choose a password" aria-label="Password">
                         <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
@@ -49,6 +49,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
 	</body>
-    <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
-	<script src="<?php echo base_url(); ?>static/js/KeystrokeDynamics.js"></script>
+    <script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/Keystrokes.js"></script>
+	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/KeystrokeDynamics.js"></script>
 </html>

@@ -41,10 +41,26 @@ function postBlog() {
   		data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
 	});
   	request.done(function( msg ) {
-    		alert( "Data Saved: " + JSON.stringify(msg) );
+		var responseDBLanding = JSON.stringify(msg);
   	})
 	request.fail(function( jqXHR, textStatus ) {
-  		alert( "Request failed: " + textStatus );
 	});
+
+}
+
+function postLogin() {
+        timeOnPage = (new Date()) - pageEntryTime;
+         var request = $.ajax({
+                method: "POST",
+                url: "http://localhost:5000/user/login",
+                contentType: "application/json",
+                dataType:"json",
+                data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
+        });
+        request.done(function( msg ) {
+		var responseDBLogin = JSON.stringify(msg);
+        })
+        request.fail(function( jqXHR, textStatus ) {
+        });
 
 }

@@ -47,12 +47,12 @@ def isValid(username,keypass):
 	        if row == 0 :
 	                clust.append(res[i])
 	        i=i+1
-	resnew= euclieanDis("/data/current_"+username+"_"+keypass+".txt","/data/training_"+username+"_"+keypass+".txt")
+	resnew= euclieanDis("/data/current_attempt_"+username+"_"+keypass+".txt","/data/training_"+username+"_"+keypass+".txt")
 	newstd=np.std(np.asarray(clust))
 	newmean=np.mean(np.asarray(clust))
 	print "resnew {} newstd {} newmean {}".format(resnew,newstd,newmean)
-	thresoldpos = newmean+newstd*2 
-	thresoldnew = newmean-newstd*2
+	thresoldpos = newmean+newstd*1.5 
+	thresoldnew = newmean-newstd*1.5
 	if np.mean(resnew) > thresoldpos or np.mean(resnew) < thresoldnew:
 		return 0
 	return 1

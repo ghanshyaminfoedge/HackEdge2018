@@ -35,8 +35,8 @@
       <file leaf-file-name="url.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/url.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="128" column="62" selection-start-line="128" selection-start-column="62" selection-end-line="128" selection-end-column="62" />
+            <state relative-caret-position="122">
+              <caret line="74" column="41" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -165,6 +165,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
@@ -270,8 +271,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/url.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="128" column="62" selection-start-line="128" selection-start-column="62" selection-end-line="128" selection-end-column="62" />
+        <state relative-caret-position="122">
+          <caret line="74" column="41" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
           <folding>
             <element signature="e#0#40#0" expanded="true" />
           </folding>

@@ -72,7 +72,7 @@ def post():
         counter += 1
     if counter < minimumSampleRequired:
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
-        return str("100")
+        return jsonify({"totalScore": 100})
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
     clicksMean = statistics.mean([a for a, b in [m for m in clicksData]])
@@ -140,7 +140,7 @@ def postLogin():
         counter += 1
     if counter < minimumSampleRequired:
         writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
-        return str("100")
+        return jsonify({"totalScore": 100})
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
     clicksMean = statistics.mean([a for a, b in [m for m in clicksData]])

@@ -49,6 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
 	</body>
-    <script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/Keystrokes.js"></script>
+ 	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/userBehaviour.js"></script>
+        <script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/Keystrokes.js"></script>
 	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/KeystrokeDynamics.js"></script>
 </html>

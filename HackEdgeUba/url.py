@@ -33,8 +33,8 @@ def predictClickPatternOutlier(trainData, testData, eps, min_samples):
     return model.labels_[-1]
 
 
-def writeTrainData(time_on_page, furthest_scroll_position, click_count):
-    with open("landingData.csv", 'a') as csvfile:
+def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_count):
+    with open(file_name, 'a') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([time_on_page, int(furthest_scroll_position), int(click_count)])
 
@@ -71,7 +71,7 @@ def post():
         clicksData.append([int(row[2]), 1])
         counter += 1
     if counter < minimumSampleRequired:
-        writeTrainData(time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
         return str("100")
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
@@ -101,13 +101,14 @@ def post():
     totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
-        writeTrainData(time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
 
     return jsonify({"totalScore": totalScore})
 
+
 @app.route('/user/login', methods=["POST"])
-def post():
+def postLogin():
     thresholdScore = 80
     minimumSampleRequired = 15
 
@@ -125,8 +126,8 @@ def post():
     time_on_page = int(time_on_page / 1000)
     furthest_scroll_position = request.json['furthestScrollPosition']
     click_count = request.json['clickCount']
-
-    testDataFile = open("landingData.csv", 'rt')
+    print(time_on_page, furthest_scroll_position, click_count)
+    testDataFile = open("loginData.csv", 'rt')
     trainData = csv.reader(testDataFile)
     pageTimeData = []
     scrollData = []
@@ -138,7 +139,7 @@ def post():
         clicksData.append([int(row[2]), 1])
         counter += 1
     if counter < minimumSampleRequired:
-        writeTrainData(time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
         return str("100")
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
@@ -168,7 +169,7 @@ def post():
     totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
-        writeTrainData(time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
 
     return jsonify({"totalScore": totalScore})

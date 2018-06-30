@@ -6,7 +6,7 @@ window.onload = function() {
 }
 
 window.onscroll = function() {
-	var element = document.getElementById("mainWrap");
+	var element = document.documentElement;
 	if(element.scrollTop > furthestScrollPosition) 
 		furthestScrollPosition = element.scrollTop;
 	else
@@ -35,13 +35,13 @@ function postBlog() {
 	timeOnPage = (new Date()) - pageEntryTime;
 	 var request = $.ajax({
   		method: "POST",
-  		url: "http://192.168.85.5:5000/user",
+  		url: "http://localhost:5000/user",
 		contentType: "application/json",
 	 	dataType:"json",
-  		data: {"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount}
+  		data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
 	});
   	request.done(function( msg ) {
-    		alert( "Data Saved: " + msg );
+    		alert( "Data Saved: " + JSON.stringify(msg) );
   	})
 	request.fail(function( jqXHR, textStatus ) {
   		alert( "Request failed: " + textStatus );

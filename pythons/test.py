@@ -1,70 +1,47 @@
 import numpy as np
 from scipy.spatial import distance
-def weightify(newInp):
-        weighted = []
-        for row in newInp:
-            weighted.append(addWeights(row))
+import sklearn
+from sklearn.cluster import DBSCAN
+import math
 
-def addWeights(newInp):
-	print newInp
-        i = 0
-        while i < len(newInp):
-            newInp = newInp(i*5)
-            newInp = newInp((i+1)*3)
-            newInp = newInp((i+2)*2)
-            i = i + 3
 
-np.set_printoptions(suppress=True)
-newInp = np.loadtxt("/data/current_attempt_test123_test123.txt", dtype='f', delimiter=',')
-training = np.loadtxt("/data/training_test123_test123.txt", dtype='f', delimiter=',')
-#wTraining = weightify(training)
-#print(training)
+def euclieanDis(currentfile, trainfile):
+	np.set_printoptions(suppress=True)
+	newInp = np.loadtxt(currentfile, dtype='f', delimiter=',')
+	training = np.loadtxt(trainfile, dtype='f', delimiter=',')
+	
+	np.absolute(newInp)
+	np.absolute(training)
+	meantrain= training.mean(axis=0)
+	meansize=(meantrain.shape)[0]/3
+	weight = list()
+	for i in range (meansize):
+		weight.append(50)
+	        weight.append(20)
+		weight.append(40)
+	weight.append(50)
+	
+	we = np.asarray(weight)
+	
+	res = list()
+	for row in newInp:
+		curres = distance.euclidean(row,meantrain,we);
+		res.append(curres)
+	return res
+res = euclieanDis("training_test123_gha.txt","training_test123_gha.txt")
+dbinput = np.asarray(res)
+dbinput = [[x,1] for x in dbinput]
+stdv = math.ceil(np.std(dbinput))
+model  = DBSCAN(eps=int(stdv), min_samples=3).fit(dbinput)
 
-#       newInp = np.loadtxt("/data/current_attempt_"+userName+"_"+keyPass+".txt", dtype='f', delimiter=',')
-#       training = np.loadtxt("/data/training_"+userName+"_"+keyPass+".txt", dtype='f', delimiter=',')
-np.absolute(newInp)
-np.absolute(training)
-meantrain= training.mean(axis=0)
-meansize=meantrain.shape[0]
-weight = list()
-for i in range (meansize):
-	weight.append(5)
-        weight.append(4)
-	weight.append(3)
+clust = list()
+i=0
+for row in model.labels_:
+	if row == 0 : 
+		clust.append(res[i])
+	i=i+1
+resnew= euclieanDis("current_attempt.txt","training_test123_gha.txt")
 
-we = np.asarray(weight)
-print "euclidean {}".format(distance.euclidean(newInp,meantrain,we))
-#cov = np.cov(training.T)
-#invcov = np.linalg.inv(cov)
-#print invcov
-#row = newInp
-#u = distance._validate_vector(row)
-#v = distance._validate_vector(meantrain)
-#VI = np.atleast_2d(invcov)
-#delta = u - v
-#m = np.dot(np.dot(delta, VI), delta)
-#m = np.absolute(m)
-#print "mahalanobis {}".format(np.sqrt(m))
-#  m = np.dot(np.dot(row, meantrain), (row-meantrain))
-#  print "mahalanobis {}".format(np.sqrt(np.absolute(m).mean(axis=0)))
-#  print "euclidean {}".format(distance.euclidean(row,meantrain))
-
-#    u = _validate_vector(u)
-#    v = _validate_vector(v)
-#    VI = np.atleast_2d(VI)
-#    delta = u - v
-#    m = np.dot(np.dot(delta, VI), delta)
-#    return np.sqrt(m)
-#tracov= np.cov(training.T)
-#incov = np.linalg.inv(tracov)
-#print newInp;
-#meantrain= training.mean(axis=0)
-
-#print distance.mahalanobis(meantrain,newInp,incov)
-#print meantrain
-#print "euclidean {}".format(distance.euclidean(newInp,meantrain))
-#print "canberra {}".format(distance.canberra(newInp,meantrain))
-#print "hamming {}".format(distance.canberra(newInp,meantrain))
-#delta = meantrain - newInp
-#m = np.dot(np.dot(delta, incov), delta)
-#np.sqrt(m*-1)
+newstd=np.std(np.asarray(clust))
+newmean=np.mean(np.asarray(clust))
+print resnew

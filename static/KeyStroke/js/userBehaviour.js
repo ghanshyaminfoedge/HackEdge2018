@@ -41,7 +41,7 @@ function postBlog() {
   		data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
 	});
   	request.done(function( msg ) {
-		var responseDBLanding = JSON.stringify(msg);
+		alert( "We are " + msg.totalScore + "% sure that you are a genuine user !!" );
   	})
 	request.fail(function( jqXHR, textStatus ) {
 	});

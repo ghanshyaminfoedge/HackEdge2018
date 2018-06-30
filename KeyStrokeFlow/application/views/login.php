@@ -38,16 +38,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                      <form id="loginForm" method="POST" action="/welcome/validate">
-                        <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName">
-                        <input class="form-control" name="password" type="password" placeholder="Choose a password" aria-label="Password">
+                        <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName" id="username">
+                        <input class="form-control" name="password" type="password" placeholder="Choose a password" id="password" aria-label="Password">
                         <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
                         <input class="form-control" type="password" placeholder="Enter key phrase" id="keyphrase" aria-label="Enter key phrase">
                         <button class="btn mt10 pull-right btn-success" id="login" type="submit">Login to Resdex</button>
+			<button class="btn mt10 pull-right btn-success" id="autoFill">Boat Demo</button>
                     </form>
                 </div>
             </div>
         </div>
 	</body>
-        <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
-	<script src="<?php echo base_url(); ?>static/js/KeystrokeDynamics.js"></script>
+        <script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/Keystrokes.js"></script>
+	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/KeyStroke/js/userBehaviour.js"></script>
+	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/KeystrokeDynamics.js"></script>
 </html>

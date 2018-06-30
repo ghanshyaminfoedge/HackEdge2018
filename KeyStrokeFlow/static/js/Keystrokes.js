@@ -18,7 +18,11 @@ $('#next, #login ').on('click', function() {
         $('#createProfile').attr("disabled", false);
     }
 });
-
+$("#autoFill").on('click',function(){
+	$("#username").val("sonakshi");	
+	$("#password").val("sonakshi");
+	$("#keyphrase").val("sonakshi");
+})
 $( "#createProfile, #login" ).on('click', function() {
 	//removing hash for phase - 1
 	$('#keyPhraseLog').val(JSON.stringify(keyPhraseArr));

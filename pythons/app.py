@@ -24,7 +24,12 @@ def mahalanobis(userName,keyPass):
 	delta = u - v
 	m = np.dot(np.dot(delta, VI), delta)
 	m = np.absolute(m)
-	return np.sqrt(m)
+	result = np.sqrt(m)
+	# number of keystroke
+	normalizedRes = training.shape[0]/3 
+	maxScore = 5000
+	percentage = (normalizedRes*100)/maxScore
+	return (100-percentage)
 
 @app.route('/keystroke/api/score', methods=['GET'])
 def getScore():

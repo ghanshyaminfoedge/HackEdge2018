@@ -50,7 +50,7 @@ class Welcome extends CI_Controller {
                 if($keyPhrase){
                     $fileName = "/data/current_attempt_".$username."_".$password.".txt";
                     file_put_contents("/data/test.txt", $keyPhrase);
-                    $this->savePattern($fileName);
+                    $this->savePatternLogin($fileName);
                 }
                 $response = $this->validatePattern($username, $password);
                 if($response == 1) {
@@ -65,6 +65,7 @@ class Welcome extends CI_Controller {
     
     private function validatePattern($username, $password) {
         $ch = curl_init("http://localhost:9090/keystroke/api/score?userName=" . $username . "&keyPass=" . $password);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -83,6 +84,21 @@ class Welcome extends CI_Controller {
     public function savePattern($fileName) {
         $dataArray = file("/data/test.txt", FILE_IGNORE_NEW_LINES);
         $this->extractFeatures(json_decode($dataArray[0], true),$fileName);
+    }
+	
+    public function savePatternLogin($fileName) {
+        $dataArray = file("/data/test.txt", FILE_IGNORE_NEW_LINES);
+        $this->extractFeaturesLogin(json_decode($dataArray[0], true),$fileName);
+    }
+    private function extractFeaturesLogin($timingDataArray,$fileName) {
+        $result = array();
+        file_put_contents($fileName, "");
+        foreach ($timingDataArray as $value) {
+            $res = $this->parseRawTimingData($value);
+            $result = $this->getCSVLineFromTimingData($res);
+            file_put_contents($fileName, print_r($result . "\n", 1), FILE_APPEND);
+	    file_put_contents($fileName, print_r($result . "\n", 1), FILE_APPEND);
+        }
     }
 
     private function extractFeatures($timingDataArray,$fileName) {

@@ -20,7 +20,7 @@ def euclieanDis(currentfile, trainfile):
         meantrain= training.mean(axis=0)
         meansize=(meantrain.shape)[0]/3
         weight = list()
-        for i in range (meansize):
+        for i in range (int(meansize)):
                 weight.append(50)
                 weight.append(20)
                 weight.append(40)
@@ -50,7 +50,7 @@ def isValid(username,keypass):
 	resnew= euclieanDis("/data/current_attempt_"+username+"_"+keypass+".txt","/data/training_"+username+"_"+keypass+".txt")
 	newstd=np.std(np.asarray(clust))
 	newmean=np.mean(np.asarray(clust))
-	#print "resnew {} newstd {} newmean {}".format(resnew,newstd,newmean)
+	print("resnew {} newstd {} newmean {}".format(resnew,newstd,newmean))
 	thresoldpos = newmean+newstd*1.5 
 	thresoldnew = newmean-newstd*1.5
 	if np.mean(resnew) > thresoldpos or np.mean(resnew) < thresoldnew:
@@ -61,7 +61,7 @@ def isValid(username,keypass):
 @app.route('/keystroke/api/score', methods=['GET'])
 def getScore():
 	res = isValid(request.args.get('userName'), request.args.get('keyPass'))
-	#print "result ============ {}".format(res)
+	print("result ============ {}".format(res))
 	return str(int(res))
 
 if __name__ == '__main__':

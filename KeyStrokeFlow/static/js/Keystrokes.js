@@ -1,5 +1,5 @@
 
-var numTimes = 5;
+var numTimes = 10;
 var current = 0;
 var keyStrokeMetricsDataArray = [];
 var KSD_FIELD_ID = "keyphrase";

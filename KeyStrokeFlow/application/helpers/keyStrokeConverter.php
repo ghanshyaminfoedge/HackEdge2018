@@ -54,7 +54,7 @@ private function parseRawTimingData( $timingDataFromPost ) {
 }
 
 function getCSVLineFromTimingData( $timingData, $repetition = -1 ) {
-    define( "MS_TO_SECONDS", 1.0/1000.0 );
+    define( "MS_TO_SECONDS", 1.0/1.0 );
 
         $csv = "";
         if( $repetition >= 0 ) {

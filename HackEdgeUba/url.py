@@ -79,11 +79,15 @@ def post():
     pageStdDev = statistics.stdev([a for a, b in [m for m in pageTimeData]])
     scrollStdDev = statistics.stdev([a for a, b in [m for m in scrollData]])
     clicksStdDev = statistics.stdev([a for a, b in [m for m in clicksData]])
-
-    pageTimePer = (pageStdDev / pageTimeMean) * 100
-    scrollPer = (scrollStdDev / scrollMean) * 100
-    clicksPer = (clicksStdDev / clicksMean) * 100
-
+    pageTimePer=0
+    scrollPer=0
+    clicksPer=0
+    if pageTimeMean!=0:
+        pageTimePer = (pageStdDev / pageTimeMean) * 100
+    if scrollMean!=0:
+        scrollPer = (scrollStdDev / scrollMean) * 100
+    if clicksMean!=0:
+        clicksPer = (clicksStdDev / clicksMean) * 100
     isPageTimeOutlier = predictPageTimeOutlier(pageTimeData, [int(time_on_page), 1], pageStdDev, pageTimeSamples)
     isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
                                                   scrollSamples)
@@ -147,10 +151,15 @@ def postLogin():
     pageStdDev = statistics.stdev([a for a, b in [m for m in pageTimeData]])
     scrollStdDev = statistics.stdev([a for a, b in [m for m in scrollData]])
     clicksStdDev = statistics.stdev([a for a, b in [m for m in clicksData]])
-
-    pageTimePer = (pageStdDev / pageTimeMean) * 100
-    scrollPer = (scrollStdDev / scrollMean) * 100
-    clicksPer = (clicksStdDev / clicksMean) * 100
+    pageTimePer=0
+    scrollPer=0
+    clicksPer=0
+    if pageTimeMean!=0:
+        pageTimePer = (pageStdDev / pageTimeMean) * 100
+    if scrollMean!=0:
+        scrollPer = (scrollStdDev / scrollMean) * 100
+    if clicksMean!=0:
+        clicksPer = (clicksStdDev / clicksMean) * 100
 
     isPageTimeOutlier = predictPageTimeOutlier(pageTimeData, [int(time_on_page), 1], pageStdDev, pageTimeSamples)
     isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
@@ -171,7 +180,7 @@ def postLogin():
     if (totalScore >= thresholdScore):
         writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
-
+    print("total score : {}".format(totalScore))
     return jsonify({"totalScore": totalScore})
 
 

@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Welcome extends CI_Controller {
@@ -146,7 +147,7 @@ class Welcome extends CI_Controller {
     }
 
     function getCSVLineFromTimingData($timingData, $repetition = -1) {
-        define("MS_TO_SECONDS", 1.0 / 1000.0);
+        define("MS_TO_SECONDS", 1.0 / 1.0);
 
         $csv = "";
         if ($repetition >= 0) {

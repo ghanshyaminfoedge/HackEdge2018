@@ -42,6 +42,7 @@ def isValid(username,keypass):
 	stdv = math.ceil(np.std(dbinput))
 	model  = DBSCAN(eps=int(stdv), min_samples=3).fit(dbinput)
 	clust = list()
+	print("model_label : {}".format(model.labels_))
 	i=0
 	for row in model.labels_:
 	        if row == 0 :
@@ -51,8 +52,8 @@ def isValid(username,keypass):
 	newstd=np.std(np.asarray(clust))
 	newmean=np.mean(np.asarray(clust))
 	print("resnew {} newstd {} newmean {}".format(resnew,newstd,newmean))
-	thresoldpos = newmean+newstd*1.5 
-	thresoldnew = newmean-newstd*1.5
+	thresoldpos = newmean+newstd*2
+	thresoldnew = newmean-newstd*2
 	if np.mean(resnew) > thresoldpos or np.mean(resnew) < thresoldnew:
 		return 0
 	return 1

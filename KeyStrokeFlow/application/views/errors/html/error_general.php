@@ -59,7 +59,7 @@ p {
 	<div id="container">
             <h1><?php echo $heading; ?></h1>
             <p><?php echo $message; ?></p>
-            <p>Click here to go to <a href="http://localhost/HackEdge2018/KeyStrokeFlow/index.php/Login">Login</a></p>
+            <p>Click here to go to <a href="/Login">Login</a></p>
 	</div>
 </body>
 </html>

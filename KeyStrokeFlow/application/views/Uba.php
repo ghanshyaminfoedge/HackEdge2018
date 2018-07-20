@@ -23,9 +23,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       </div>
                       <ul class="nav navbar-nav">
                         <li class="active"><a href="/">Create</a></li>
-                        <li><a href="/home">Home</a></li>
+                        <li><a href="home">Home</a></li>
                         <li><a href="/uba">UBA Demo</a></li>
-                        <li><a href="/login">Login</a></li>
+                        <li><a href="login">Login</a></li>
                       </ul>
                     </div>
                 </nav>
@@ -36,21 +36,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         0%
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-offset-4 col-md-4">
-                    <form id="loginForm" action="/welcome/create" method="POST">
-                        <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName">
-                        <input class="form-control" name="password" type="password" placeholder="Choose a password" aria-label="Password">
-                        <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
-                        <input class="form-control" type="password" placeholder="Confirm password" id="keyphrase" aria-label="Confirm Password">
-                        <button type="button" class="btn mt10 btn-primary" id="next">Next</button>
-                        <button class="btn mt10 pull-right btn-success" id="createProfile" type="submit">Create Profile</button>
-                    </form>
+            <div class="row" id="mainWrap">
+                <div class="col-md-offset-2 col-md-8">
+                    <div id="ubaForm">
+                        <input class="form-control" type="text" placeholder="Add topic name" aria-label="UserName" required>
+                        <input class="form-control" type="email" placeholder="Email id" required>
+                        <input class="form-control" type="mobile" placeholder="Mobile number" required>
+			<input class="form-control" type="textArea" placeholder="Blog Content" required>
+			<textarea class="form-control" rows="10" cols="150" placeholder="Enter content for the blog" id="keyphrase" style="margin-top:20px" required></textarea>
+                        <button class="btn mt10 pull-right btn-success" id="PostBlog" onclick="postBlog()">Post Blog</button>
+                    </div>
                 </div>
             </div>
         </div>
 	</body>
-        <script src="<?php echo base_url(); ?>static/js/userBehaviour.js"></script>
         <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
 	<script src="<?php echo base_url(); ?>static/js/KeystrokeDynamics.js"></script>
+        <script src="<?php echo base_url(); ?>static/js/userBehaviour.js"></script>
 </html>

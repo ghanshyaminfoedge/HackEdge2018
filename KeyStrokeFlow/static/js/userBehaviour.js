@@ -33,12 +33,17 @@ function generateDumpString() {
 
 function postBlog() {
 	timeOnPage = (new Date()) - pageEntryTime;
+        var keyStrokeData = JSON.stringify(keyLogs['#keyphrase']);
 	 var request = $.ajax({
   		method: "POST",
-  		url: "http://localhost:5000/user",
+  		url: "http://localhost:8000/uba/post",
 		contentType: "application/json",
 	 	dataType:"json",
-  		data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})
+  		data: JSON.stringify({
+                    "keyStrokeLog": keyStrokeData, 
+                    "timeOnPage": timeOnPage, 
+                    "furthestScrollPosition":furthestScrollPosition, 
+                    "clickCount": clickCount})
 	});
   	request.done(function( msg ) {
 		var responseDBLanding = JSON.stringify(msg);

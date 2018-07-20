@@ -24,6 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       <ul class="nav navbar-nav">
                         <li class="active"><a href="/">Create</a></li>
                         <li><a href="home">Home</a></li>
+                        <li><a href="/uba">UBA Demo</a></li>
                         <li><a href="login">Login</a></li>
                       </ul>
                     </div>
@@ -37,7 +38,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
-                     <form id="loginForm" method="POST" action="http://localhost/HackEdge2018/KeyStrokeFlow/index.php/welcome/validate">
+                     <form id="loginForm" method="POST" action="/welcome/validate">
                         <input class="form-control" name="username" type="text" placeholder="Create Username" aria-label="UserName" id="username">
                         <input class="form-control" name="password" type="password" placeholder="Choose a password" id="password" aria-label="Password">
                         <input type="hidden" value="" name="keyPhrase" id="keyPhraseLog">
@@ -50,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
 	</body>
-	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/userBehaviour.js"></script>
-        <script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/Keystrokes.js"></script>
-	<script src="http://localhost/HackEdge2018/KeyStrokeFlow/static/js/KeystrokeDynamics.js"></script>
+        <script src="<?php echo base_url(); ?>static/js/Keystrokes.js"></script>
+	<script src="<?php echo base_url(); ?>static/js/KeystrokeDynamics.js"></script>
+        <script src="<?php echo base_url(); ?>static/js/userBehaviour.js"></script>
 </html>

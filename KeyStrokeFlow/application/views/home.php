@@ -24,6 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       <ul class="nav navbar-nav">
                         <li class="active"><a href="/">Create</a></li>
                         <li><a href="home">Home</a></li>
+                        <li><a href="/uba">UBA Demo</a></li>
                         <li><a href="login">Login</a></li>
                       </ul>
                     </div>

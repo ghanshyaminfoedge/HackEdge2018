@@ -35,15 +35,16 @@ function postBlog() {
 	timeOnPage = (new Date()) - pageEntryTime;
         var keyStrokeData = JSON.stringify(keyLogs['#keyphrase']);
 	 var request = $.ajax({
-  		method: "POST",
-  		url: "http://localhost:8000/uba/post",
-		contentType: "application/json",
-	 	dataType:"json",
-  		data: JSON.stringify({
+                type: 'POST',
+  		url: 'http://localhost:8000/uba/post',
+		ContentType: 'application/json',
+	 	dataType:'json',
+  		data: {'data' : JSON.stringify({
                     "keyStrokeLog": keyStrokeData, 
                     "timeOnPage": timeOnPage, 
                     "furthestScrollPosition":furthestScrollPosition, 
                     "clickCount": clickCount})
+            }
 	});
   	request.done(function( msg ) {
 		var responseDBLanding = JSON.stringify(msg);
@@ -58,7 +59,7 @@ function postLogin() {
          return $.ajax({
                 method: "POST",
                 url: "http://localhost:5000/user/login",
-                contentType: "application/json",
+                ContentType: "application/json",
                 dataType:"json",
 		async:false,
                 data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})

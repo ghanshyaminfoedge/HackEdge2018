@@ -75,7 +75,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td height="15"></td>
                     </tr>
                     <tr>
-                        <td style="font-size:11px; line-height:17px"><font face="Verdana, Arial" color="#262626">Please click <a href="/login/perform?id=<?php if ($fake == '1') :?>UI*!@912ks12310123klas2jk2123j1l19== <?php else : ?>UW*1282Kjak129911jasjka91k1k1k19123k0==<?php endif ?>">Login</a> for secure login in your account. <br/>This link is intended for rohit.sharma1@<strong>naukri.com</strong>. This link is valid for 1 minute only.</font></td>
+                        <td style="font-size:11px; line-height:17px"><font face="Verdana, Arial" color="#262626">Please click <a href="/login/perform?id=<?php if ($fake == '1') :?>UI*!@912ks12310123klas2jk2123j1l19== <?php else : ?>UW*1282Kjak129911jasjka91k1k1k19123k0==<?php endif ?>">Login</a> for secure login in your account. <br/>This link is intended for rohit.sharma1@<strong>naukri.com</strong>. This link is valid for 1 minute only.<br/><i><small>(This link contains encrypted IP address and browser footprinting for now and can get advance incrementally)</i></small></font></td>
                     </tr>
                     <tr>
                     <td height="20"></td>

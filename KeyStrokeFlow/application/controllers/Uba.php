@@ -28,12 +28,12 @@ class Uba extends CI_Controller {
 	{
             $ch = curl_init("http://localhost:5000/user");
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "ubaData=" . $_POST['data']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST['data']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             $response = curl_exec($ch);
             curl_close($ch);
-            //home page
+            return $response;      
 	}
 
 }

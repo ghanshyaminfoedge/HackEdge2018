@@ -4,6 +4,9 @@ from sklearn.cluster import DBSCAN
 import statistics
 import math
 from flask_cors import CORS
+import json
+from collections import namedtuple
+import mysql.connector
 
 app = Flask(__name__)
 CORS(app)
@@ -38,7 +41,24 @@ def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_coun
         writer = csv.writer(csvfile)
         writer.writerow([time_on_page, int(furthest_scroll_position), int(click_count)])
 
-
+def saveKeyStrokeData(keyStrokeData):
+    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
+    cur = db.cursor()
+    x = json.loads(keyStrokeData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    for i in range (0,len(x)-1,1):
+        keyCombo = str(x[i].keyCode) + '-' + str(x[i+1].keyCode)
+        timeheld_1 = x[i].timeUp - x[i].timeDown
+        timeheld_2 = x[i+1].timeUp - x[i+1].timeDown
+        timeDD = x[i+1].timeDown - x[i].timeDown
+        timeUD = x[i+1].timeDown - x[i].timeUp
+        data_array = str(timeheld_1) +','+str(timeheld_1)+','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
+        data_array = str(timeheld_1) +','+str(timeheld_1)+','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
+        queryString=("insert into keystroke_data.keystroke (username,key_combo,data_array) values (%s,%s,%s);")
+        insertdata = ('ghan',keyCombo,data_array)
+        cur.execute(queryString,insertdata)
+    db.commit()
+    cur.close()
+    db.close()
 @app.route('/user', methods=["POST"])
 def post():
     thresholdScore = 80
@@ -53,11 +73,14 @@ def post():
             scrollSamples = row[3]
             clicksEps = row[4]
             clicksSamples = row[5]
-
-    time_on_page = request.json['timeOnPage']
+    requestData=request.get_data().decode('utf8')
+    requestObject = json.loads(requestData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    keyStorkDtata = requestObject.keyStrokeLog
+    saveKeyStrokeData(keyStorkDtata)
+    time_on_page = requestObject.timeOnPage
     time_on_page = int(time_on_page / 1000)
-    furthest_scroll_position = request.json['furthestScrollPosition']
-    click_count = request.json['clickCount']
+    furthest_scroll_position = requestObject.furthestScrollPosition
+    click_count = requestObject.clickCount
 
     testDataFile = open("landingData.csv", 'rt')
     trainData = csv.reader(testDataFile)
@@ -107,7 +130,7 @@ def post():
     if (totalScore >= thresholdScore):
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
-
+    print('response {}'.format(totalScore))
     return jsonify({"totalScore": totalScore})
 
 

@@ -46,19 +46,19 @@ class Welcome extends CI_Controller {
         $keyPhrase = $_POST['keyPhrase'];
 	$ubaScore = $_POST['ubaScore'];
 	if($ubaScore && $ubaScore <= 70)
-		 $this->showError($ubaScore);
+            $this->suspiciousUser($ubaScore);
         else if ($username && $password) {
-                if($keyPhrase){
-                    $fileName = "/data/current_attempt_".$username."_".$password.".txt";
-                    file_put_contents("/data/test.txt", $keyPhrase);
-                    $this->savePatternLogin($fileName);
-                }
-                $response = $this->validatePattern($username, $password);
-                if($response == 1) {
-                    $this->load->view('home');
-                } else {
-                    $this->showError();
-                }
+            if($keyPhrase){
+                $fileName = "/data/current_attempt_".$username."_".$password.".txt";
+                file_put_contents("/data/test.txt", $keyPhrase);
+                $this->savePatternLogin($fileName);
+            }
+            $response = $this->validatePattern($username, $password);
+            if($response == 1) {
+                $this->load->view('home');
+            } else {
+                $this->suspiciousUser();
+            }
         } else {
             $this->showError();
         }
@@ -73,6 +73,13 @@ class Welcome extends CI_Controller {
         return $response;
         /*$url = "http://localhost:5000/keystroke/api/score?userName=" . $username . "&keyPass=" . $password;
         $output = $this->curl->simple_get($url, $post_data);*/
+    }
+    
+    private function suspiciousUser($ubaScore="") {
+        $data['heading'] = "Suspicious user";
+        $ubaScore && $data['heading'] .= $data['heading'] . " (with score = " . $ubaScore . ")";
+	$data['message'] = "Looks like your account is compromised \n Please click the login link sent on your email";
+        $this->load->view('errors/html/error_email', $data);
     }
     
     private function showError($ubaScore = "") {
@@ -91,6 +98,7 @@ class Welcome extends CI_Controller {
         $dataArray = file("/data/test.txt", FILE_IGNORE_NEW_LINES);
         $this->extractFeaturesLogin(json_decode($dataArray[0], true),$fileName);
     }
+    
     private function extractFeaturesLogin($timingDataArray,$fileName) {
         $result = array();
         file_put_contents($fileName, "");

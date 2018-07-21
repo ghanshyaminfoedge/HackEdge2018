@@ -21,12 +21,12 @@ class Home extends CI_Controller {
 	 */
 	public function index()
 	{
-            if(rand(1, 10)*10 > 50 ) {
+         //   if(rand(1, 10)*10 > 50 ) {
                 $this->load->view('home');
-            } else {
-                $data['heading'] = "Suspicious user";
-                $data['message'] = "Your activities are suspicious, please contact support@naukri.com for more details.";
-                $this->load->view('errors/html/error_general', $data);
-            }                
+//            } else {
+//                $data['heading'] = "Suspicious user";
+//                $data['message'] = "Your activities are suspicious, please contact support@naukri.com for more details.";
+//                $this->load->view('errors/html/error_general', $data);
+//            }                
 	}
 }

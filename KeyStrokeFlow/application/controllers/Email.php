@@ -2,16 +2,16 @@
 error_reporting(0);
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends CI_Controller {
+class Email extends CI_Controller {
 
     /**
      * Index Page for this controller.
      *
      * Maps to the following URL
      * 		http://example.com/index.php/welcome
-     * 	- or -
+     *	- or -
      * 		http://example.com/index.php/welcome/index
-     * 	- or -
+     *	- or -
      * Since this controller is set as the default controller in
      * config/routes.php, it's displayed at http://example.com/
      *
@@ -19,18 +19,11 @@ class Login extends CI_Controller {
      * map to /index.php/welcome/<method_name>
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
-    public function index() {
-        $this->load->view('login');
-    }
-
-    public function perform() {
-        $id= $_GET['id'];
-        if($id == "UW*1282Kjak129911jasjka91k1k1k19123k0==") {
-            redirect("home");
-        } else {
-            redirect("login");
-        }
+    public function index()
+    {
+        $fakeUser = $_GET['fake'];
+        $fakeUser = $fakeUser ? $fakeUser : 0;
+        $this->load->view('email', array('fake'=>$fakeUser));
     }
 
 }
-?>

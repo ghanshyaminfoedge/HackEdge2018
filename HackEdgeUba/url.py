@@ -7,6 +7,9 @@ from flask_cors import CORS
 import json
 from collections import namedtuple
 import mysql.connector
+import time
+from hdbscan import HDBSCAN
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -41,7 +44,7 @@ def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_coun
         writer = csv.writer(csvfile)
         writer.writerow([time_on_page, int(furthest_scroll_position), int(click_count)])
 
-def saveKeyStrokeData(keyStrokeData):
+def saveKeyStrokeData(keyStrokeData,timeInSeconds):
     db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
     cur = db.cursor()
     x = json.loads(keyStrokeData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -51,14 +54,50 @@ def saveKeyStrokeData(keyStrokeData):
         timeheld_2 = x[i+1].timeUp - x[i+1].timeDown
         timeDD = x[i+1].timeDown - x[i].timeDown
         timeUD = x[i+1].timeDown - x[i].timeUp
-        data_array = str(timeheld_1) +','+str(timeheld_1)+','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
-        data_array = str(timeheld_1) +','+str(timeheld_1)+','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
-        queryString=("insert into keystroke_data.keystroke (username,key_combo,data_array) values (%s,%s,%s);")
-        insertdata = ('ghan',keyCombo,data_array)
+        data_array = str(timeheld_1) +','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
+        queryString=("insert into keystroke_data.keystroke (username,key_combo,data_array,created) values (%s,%s,%s,%s);")
+        insertdata = ('ghan',keyCombo,data_array,timeInSeconds)
         cur.execute(queryString,insertdata)
     db.commit()
     cur.close()
     db.close()
+    
+def testKeyStrokeHistory():
+    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
+    cur = db.cursor(buffered=True)
+    min_cluster_siz=4
+    cur.execute("select key_combo from keystroke group by username, key_combo having count(*)>10;")
+    listOfModelOutputs=[]
+    for row in cur:
+        selectcur = db.cursor(buffered=True)
+        selectcur.execute("select data_array from keystroke where key_combo = '{}'".format(row[0]))
+        arr = []
+        for resrow in selectcur:
+            y = [float(i) for i in resrow[0].split(',')]
+            arr.append(y)
+        omodel = HDBSCAN(min_cluster_size=min_cluster_siz).fit(np.array(arr))
+        print(omodel.labels_)
+        listOfModelOutputs.append(omodel.labels_)
+        selectcur.close()
+    cur.close()
+    db.close()
+    totalKeyComboAnalysing=0
+    deviationCount=0
+    for le in listOfModelOutputs:
+        totalKeyComboAnalysing=totalKeyComboAnalysing+1
+        clusteridtocount = {}
+        currentClusterCount=0
+        for val in le.tolist():
+            if val in clusteridtocount:
+                clusteridtocount[val]=clusteridtocount[val]+1
+            else:
+                clusteridtocount[val]=1
+        for the_key, the_value in clusteridtocount.items():
+            if the_value>min_cluster_siz:
+                currentClusterCount=currentClusterCount+1
+        if currentClusterCount>1:
+            deviationCount=deviationCount+1
+    return (deviationCount*100)/totalKeyComboAnalysing
 @app.route('/user', methods=["POST"])
 def post():
     thresholdScore = 80
@@ -73,15 +112,17 @@ def post():
             scrollSamples = row[3]
             clicksEps = row[4]
             clicksSamples = row[5]
+    timeInSeconds = int(round(time.time() * 1000*1000))
     requestData=request.get_data().decode('utf8')
     requestObject = json.loads(requestData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     keyStorkDtata = requestObject.keyStrokeLog
-    saveKeyStrokeData(keyStorkDtata)
+    saveKeyStrokeData(keyStorkDtata,timeInSeconds)
+    percentage=testKeyStrokeHistory()
+    print(percentage)
     time_on_page = requestObject.timeOnPage
     time_on_page = int(time_on_page / 1000)
     furthest_scroll_position = requestObject.furthestScrollPosition
     click_count = requestObject.clickCount
-
     testDataFile = open("landingData.csv", 'rt')
     trainData = csv.reader(testDataFile)
     pageTimeData = []

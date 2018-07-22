@@ -36,18 +36,19 @@ function postBlog() {
         var keyStrokeData = JSON.stringify(keyLogs['#keyphrase']);
 	 var request = $.ajax({
                 type: 'POST',
-  		url: 'http://localhost:8000/uba/post',
-		ContentType: 'application/json',
+  		url: 'http://localhost:5000/user',
+		contentType: 'application/json',
 	 	dataType:'json',
-  		data: {'data' : JSON.stringify({
+  		data: JSON.stringify({
                     "keyStrokeLog": keyStrokeData, 
                     "timeOnPage": timeOnPage, 
                     "furthestScrollPosition":furthestScrollPosition, 
                     "clickCount": clickCount})
-            }
+            
 	});
   	request.done(function( msg ) {
-		var responseDBLanding = JSON.stringify(msg);
+		alert( "We are " + msg.totalScore + "% sure that you are a genuine user !!" );
+                window.location.href=window.location.href;
   	})
 	request.fail(function( jqXHR, textStatus ) {
 	});
@@ -59,7 +60,7 @@ function postLogin() {
          return $.ajax({
                 method: "POST",
                 url: "http://localhost:5000/user/login",
-                ContentType: "application/json",
+                contentType: "application/json",
                 dataType:"json",
 		async:false,
                 data: JSON.stringify({"timeOnPage": timeOnPage, "furthestScrollPosition":furthestScrollPosition, "clickCount": clickCount})

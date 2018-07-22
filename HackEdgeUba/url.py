@@ -44,30 +44,33 @@ def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_coun
         writer = csv.writer(csvfile)
         writer.writerow([time_on_page, int(furthest_scroll_position), int(click_count)])
 
-def saveKeyStrokeData(keyStrokeData,timeInSeconds):
+
+def saveKeyStrokeData(keyStrokeData, timeInSeconds):
     db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
     cur = db.cursor()
     x = json.loads(keyStrokeData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-    for i in range (0,len(x)-1,1):
-        keyCombo = str(x[i].keyCode) + '-' + str(x[i+1].keyCode)
+    for i in range(0, len(x) - 1, 1):
+        keyCombo = str(x[i].keyCode) + '-' + str(x[i + 1].keyCode)
         timeheld_1 = x[i].timeUp - x[i].timeDown
-        timeheld_2 = x[i+1].timeUp - x[i+1].timeDown
-        timeDD = x[i+1].timeDown - x[i].timeDown
-        timeUD = x[i+1].timeDown - x[i].timeUp
-        data_array = str(timeheld_1) +','+str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
-        queryString=("insert into keystroke_data.keystroke (username,key_combo,data_array,created) values (%s,%s,%s,%s);")
-        insertdata = ('ghan',keyCombo,data_array,timeInSeconds)
-        cur.execute(queryString,insertdata)
+        timeheld_2 = x[i + 1].timeUp - x[i + 1].timeDown
+        timeDD = x[i + 1].timeDown - x[i].timeDown
+        timeUD = x[i + 1].timeDown - x[i].timeUp
+        data_array = str(timeheld_1) + ',' + str(timeheld_2) + ',' + str(timeDD) + ',' + str(timeUD)
+        queryString = (
+            "insert into keystroke_data.keystroke (username,key_combo,data_array,created) values (%s,%s,%s,%s);")
+        insertdata = ('ghan', keyCombo, data_array, timeInSeconds)
+        cur.execute(queryString, insertdata)
     db.commit()
     cur.close()
     db.close()
-    
+
+
 def testKeyStrokeHistory():
     db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
     cur = db.cursor(buffered=True)
-    min_cluster_siz=4
+    min_cluster_siz = 4
     cur.execute("select key_combo from keystroke group by username, key_combo having count(*)>10;")
-    listOfModelOutputs=[]
+    listOfModelOutputs = []
     for row in cur:
         selectcur = db.cursor(buffered=True)
         selectcur.execute("select data_array from keystroke where key_combo = '{}'".format(row[0]))
@@ -81,23 +84,25 @@ def testKeyStrokeHistory():
         selectcur.close()
     cur.close()
     db.close()
-    totalKeyComboAnalysing=0
-    deviationCount=0
+    totalKeyComboAnalysing = 0
+    deviationCount = 0
     for le in listOfModelOutputs:
-        totalKeyComboAnalysing=totalKeyComboAnalysing+1
+        totalKeyComboAnalysing = totalKeyComboAnalysing + 1
         clusteridtocount = {}
-        currentClusterCount=0
+        currentClusterCount = 0
         for val in le.tolist():
             if val in clusteridtocount:
-                clusteridtocount[val]=clusteridtocount[val]+1
+                clusteridtocount[val] = clusteridtocount[val] + 1
             else:
-                clusteridtocount[val]=1
+                clusteridtocount[val] = 1
         for the_key, the_value in clusteridtocount.items():
-            if the_value>min_cluster_siz:
-                currentClusterCount=currentClusterCount+1
-        if currentClusterCount>1:
-            deviationCount=deviationCount+1
-    return (deviationCount*100)/totalKeyComboAnalysing
+            if the_value > min_cluster_siz:
+                currentClusterCount = currentClusterCount + 1
+        if currentClusterCount > 1:
+            deviationCount = deviationCount + 1
+    return (deviationCount * 100) / totalKeyComboAnalysing
+
+
 @app.route('/user', methods=["POST"])
 def post():
     thresholdScore = 80
@@ -112,17 +117,22 @@ def post():
             scrollSamples = row[3]
             clicksEps = row[4]
             clicksSamples = row[5]
-    timeInSeconds = int(round(time.time() * 1000*1000))
-    requestData=request.get_data().decode('utf8')
+    timeInSeconds = int(round(time.time() * 1000 * 1000))
+    requestData = request.get_data().decode('utf8')
     requestObject = json.loads(requestData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     keyStorkDtata = requestObject.keyStrokeLog
-    saveKeyStrokeData(keyStorkDtata,timeInSeconds)
-    percentage=testKeyStrokeHistory()
+    saveKeyStrokeData(keyStorkDtata, timeInSeconds)
+    percentage = testKeyStrokeHistory()
     print(percentage)
     time_on_page = requestObject.timeOnPage
     time_on_page = int(time_on_page / 1000)
     furthest_scroll_position = requestObject.furthestScrollPosition
     click_count = requestObject.clickCount
+    print('********Request Values***********')
+    print(time_on_page)
+    print(furthest_scroll_position)
+    print(click_count)
+
     testDataFile = open("landingData.csv", 'rt')
     trainData = csv.reader(testDataFile)
     pageTimeData = []
@@ -143,35 +153,71 @@ def post():
     pageStdDev = statistics.stdev([a for a, b in [m for m in pageTimeData]])
     scrollStdDev = statistics.stdev([a for a, b in [m for m in scrollData]])
     clicksStdDev = statistics.stdev([a for a, b in [m for m in clicksData]])
-    pageTimePer=0
-    scrollPer=0
-    clicksPer=0
-    if pageTimeMean!=0:
+    print('********Mean***********')
+    print(pageTimeMean)
+    print(scrollMean)
+    print(clicksMean)
+    print('********Deviation***********')
+    print(pageStdDev)
+    print(scrollStdDev)
+    print(clicksStdDev)
+    pageTimePer = 0
+    scrollPer = 0
+    clicksPer = 0
+    if pageTimeMean != 0:
         pageTimePer = (pageStdDev / pageTimeMean) * 100
-    if scrollMean!=0:
+    if scrollMean != 0:
         scrollPer = (scrollStdDev / scrollMean) * 100
-    if clicksMean!=0:
+    if clicksMean != 0:
         clicksPer = (clicksStdDev / clicksMean) * 100
     isPageTimeOutlier = predictPageTimeOutlier(pageTimeData, [int(time_on_page), 1], pageStdDev, pageTimeSamples)
-    isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
-                                                  scrollSamples)
-    isClickOutlier = predictScrollPatternOutlier(clicksData, [int(click_count), 1], clicksStdDev, clicksSamples)
 
+    if (scrollStdDev == 0) & (scrollMean == furthest_scroll_position):
+        isScrollOutlier = 1
+    else:
+        isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
+                                                      scrollSamples)
+    isClickOutlier = predictScrollPatternOutlier(clicksData, [int(click_count), 1], clicksStdDev, clicksSamples)
+    print('*******Training Data Percentage************')
+    print(pageTimePer)
+    print(scrollPer)
+    print(clicksPer)
+    print('********Outliers***********')
+    print(isPageTimeOutlier)
+    print(isScrollOutlier)
+    print(isClickOutlier)
     total_sum = (pageTimePer + scrollPer + clicksPer)
     pageTimeWeight = ((total_sum - pageTimePer) / (total_sum * 2)) * 100
     scrollWeight = ((total_sum - scrollPer) / (total_sum * 2)) * 100
     clicksWeight = ((total_sum - clicksPer) / (total_sum * 2)) * 100
+    print('*******************')
+    print(pageTimeWeight)
+    print(scrollWeight)
+    print(clicksWeight)
 
-    pageAuthPer = (isPageTimeOutlier == 0 and 1 or 0) * pageTimeWeight
-    scrollAuthPer = (isScrollOutlier == 0 and 1 or 0) * scrollWeight
-    clickAuthPer = (isClickOutlier == 0 and 1 or 0) * clicksWeight
+    total_weight = ((pageTimeWeight * 0.4) + (scrollWeight * 0.2) + (clicksWeight * 0.4))
+    pageTimeWeight = ((total_weight - (pageTimeWeight * 0.4)) / (total_weight * 2)) * 100
+    scrollWeight = ((total_weight - (scrollWeight * 0.2)) / (total_weight * 2)) * 100
+    clicksWeight = ((total_weight - (clicksWeight * 0.4)) / (total_weight * 2)) * 100
+    print('********Final Weight Percentage***********')
+    print(pageTimeWeight)
+    print(scrollWeight)
+    print(clicksWeight)
+
+    pageAuthPer = (isPageTimeOutlier >= 0 and 1 or 0) * pageTimeWeight
+    scrollAuthPer = (isScrollOutlier >= 0 and 1 or 0) * scrollWeight
+    clickAuthPer = (isClickOutlier >= 0 and 1 or 0) * clicksWeight
+    print('******Final Scores*************')
+    print(pageAuthPer)
+    print(scrollAuthPer)
+    print(clickAuthPer)
 
     totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
-    print('response {}'.format(totalScore))
+
     return jsonify({"totalScore": totalScore})
 
 
@@ -194,8 +240,12 @@ def postLogin():
     time_on_page = int(time_on_page / 1000)
     furthest_scroll_position = request.json['furthestScrollPosition']
     click_count = request.json['clickCount']
-    print(time_on_page, furthest_scroll_position, click_count)
-    testDataFile = open("loginData.csv", 'rt')
+    print('********Request Values***********')
+    print(time_on_page)
+    print(furthest_scroll_position)
+    print(click_count)
+
+    testDataFile = open("landingData.csv", 'rt')
     trainData = csv.reader(testDataFile)
     pageTimeData = []
     scrollData = []
@@ -207,7 +257,7 @@ def postLogin():
         clicksData.append([int(row[2]), 1])
         counter += 1
     if counter < minimumSampleRequired:
-        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
         return jsonify({"totalScore": 100})
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
@@ -215,36 +265,71 @@ def postLogin():
     pageStdDev = statistics.stdev([a for a, b in [m for m in pageTimeData]])
     scrollStdDev = statistics.stdev([a for a, b in [m for m in scrollData]])
     clicksStdDev = statistics.stdev([a for a, b in [m for m in clicksData]])
-    pageTimePer=0
-    scrollPer=0
-    clicksPer=0
-    if pageTimeMean!=0:
+    print('********Mean***********')
+    print(pageTimeMean)
+    print(scrollMean)
+    print(clicksMean)
+    print('********Deviation***********')
+    print(pageStdDev)
+    print(scrollStdDev)
+    print(clicksStdDev)
+    pageTimePer = 0
+    scrollPer = 0
+    clicksPer = 0
+    if pageTimeMean != 0:
         pageTimePer = (pageStdDev / pageTimeMean) * 100
-    if scrollMean!=0:
+    if scrollMean != 0:
         scrollPer = (scrollStdDev / scrollMean) * 100
-    if clicksMean!=0:
+    if clicksMean != 0:
         clicksPer = (clicksStdDev / clicksMean) * 100
-
     isPageTimeOutlier = predictPageTimeOutlier(pageTimeData, [int(time_on_page), 1], pageStdDev, pageTimeSamples)
-    isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
-                                                  scrollSamples)
-    isClickOutlier = predictScrollPatternOutlier(clicksData, [int(click_count), 1], clicksStdDev, clicksSamples)
 
+    if (scrollStdDev == 0) & (scrollMean == furthest_scroll_position):
+        isScrollOutlier = 1
+    else:
+        isScrollOutlier = predictScrollPatternOutlier(scrollData, [int(furthest_scroll_position), 1], scrollStdDev,
+                                                      scrollSamples)
+    isClickOutlier = predictScrollPatternOutlier(clicksData, [int(click_count), 1], clicksStdDev, clicksSamples)
+    print('*******Training Data Percentage************')
+    print(pageTimePer)
+    print(scrollPer)
+    print(clicksPer)
+    print('********Outliers***********')
+    print(isPageTimeOutlier)
+    print(isScrollOutlier)
+    print(isClickOutlier)
     total_sum = (pageTimePer + scrollPer + clicksPer)
     pageTimeWeight = ((total_sum - pageTimePer) / (total_sum * 2)) * 100
     scrollWeight = ((total_sum - scrollPer) / (total_sum * 2)) * 100
     clicksWeight = ((total_sum - clicksPer) / (total_sum * 2)) * 100
+    print('*******************')
+    print(pageTimeWeight)
+    print(scrollWeight)
+    print(clicksWeight)
 
-    pageAuthPer = (isPageTimeOutlier == 0 and 1 or 0) * pageTimeWeight
-    scrollAuthPer = (isScrollOutlier == 0 and 1 or 0) * scrollWeight
-    clickAuthPer = (isClickOutlier == 0 and 1 or 0) * clicksWeight
+    total_weight = ((pageTimeWeight * 0.4) + (scrollWeight * 0.2) + (clicksWeight * 0.4))
+    pageTimeWeight = ((total_weight - (pageTimeWeight * 0.4)) / (total_weight * 2)) * 100
+    scrollWeight = ((total_weight - (scrollWeight * 0.2)) / (total_weight * 2)) * 100
+    clicksWeight = ((total_weight - (clicksWeight * 0.4)) / (total_weight * 2)) * 100
+    print('********Final Weight Percentage***********')
+    print(pageTimeWeight)
+    print(scrollWeight)
+    print(clicksWeight)
+
+    pageAuthPer = (isPageTimeOutlier >= 0 and 1 or 0) * pageTimeWeight
+    scrollAuthPer = (isScrollOutlier >= 0 and 1 or 0) * scrollWeight
+    clickAuthPer = (isClickOutlier >= 0 and 1 or 0) * clicksWeight
+    print('******Final Scores*************')
+    print(pageAuthPer)
+    print(scrollAuthPer)
+    print(clickAuthPer)
 
     totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
-        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
-    print("total score : {}".format(totalScore))
+
     return jsonify({"totalScore": totalScore})
 
 

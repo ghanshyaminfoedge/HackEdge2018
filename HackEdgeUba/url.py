@@ -46,7 +46,7 @@ def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_coun
 
 
 def saveKeyStrokeData(keyStrokeData, timeInSeconds):
-    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
+    db = mysql.connector.connect(user='root', password='root', database='keystroke_data')
     cur = db.cursor()
     x = json.loads(keyStrokeData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     for i in range(0, len(x) - 1, 1):
@@ -66,7 +66,7 @@ def saveKeyStrokeData(keyStrokeData, timeInSeconds):
 
 
 def testKeyStrokeHistory():
-    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
+    db = mysql.connector.connect(user='root', password='root', database='keystroke_data')
     cur = db.cursor(buffered=True)
     min_cluster_siz = 4
     cur.execute("select key_combo from keystroke group by username, key_combo having count(*)>10;")
@@ -146,7 +146,7 @@ def post():
         counter += 1
     if counter < minimumSampleRequired:
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
-        return jsonify({"totalScore": 100})
+        return jsonify({"totalScore": 100, "keyStrokeScore": percentage})
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
     clicksMean = statistics.mean([a for a, b in [m for m in clicksData]])
@@ -218,7 +218,7 @@ def post():
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
 
-    return jsonify({"totalScore": totalScore})
+    return jsonify({"totalScore": 100, "keyStrokeScore": percentage})
 
 
 @app.route('/user/login', methods=["POST"])
@@ -298,39 +298,38 @@ def postLogin():
     print(isPageTimeOutlier)
     print(isScrollOutlier)
     print(isClickOutlier)
-    total_sum = (pageTimePer + scrollPer + clicksPer)
-    pageTimeWeight = ((total_sum - pageTimePer) / (total_sum * 2)) * 100
-    scrollWeight = ((total_sum - scrollPer) / (total_sum * 2)) * 100
-    clicksWeight = ((total_sum - clicksPer) / (total_sum * 2)) * 100
+    total_sum = (pageTimePer + clicksPer)
+    pageTimeWeight = ((total_sum - pageTimePer) / (total_sum)) * 100
+    # scrollWeight = ((total_sum - scrollPer) / (total_sum * 2)) * 100
+    clicksWeight = ((total_sum - clicksPer) / (total_sum)) * 100
     print('*******************')
     print(pageTimeWeight)
-    print(scrollWeight)
+    # print(scrollWeight)
     print(clicksWeight)
 
-    total_weight = ((pageTimeWeight * 0.4) + (scrollWeight * 0.2) + (clicksWeight * 0.4))
-    pageTimeWeight = ((total_weight - (pageTimeWeight * 0.4)) / (total_weight * 2)) * 100
-    scrollWeight = ((total_weight - (scrollWeight * 0.2)) / (total_weight * 2)) * 100
-    clicksWeight = ((total_weight - (clicksWeight * 0.4)) / (total_weight * 2)) * 100
+    total_weight = ((pageTimeWeight * 0.8) + (clicksWeight * 0.2))
+    pageTimeWeight = ((total_weight - (pageTimeWeight * 0.8)) / (total_weight)) * 100
+    # scrollWeight = ((total_weight - (scrollWeight * 0)) / (total_weight * 2)) * 100
+    clicksWeight = ((total_weight - (clicksWeight * 0.2)) / (total_weight)) * 100
     print('********Final Weight Percentage***********')
     print(pageTimeWeight)
-    print(scrollWeight)
+    # print(scrollWeight)
     print(clicksWeight)
 
     pageAuthPer = (isPageTimeOutlier >= 0 and 1 or 0) * pageTimeWeight
-    scrollAuthPer = (isScrollOutlier >= 0 and 1 or 0) * scrollWeight
+    # scrollAuthPer = (isScrollOutlier >= 0 and 1 or 0) * scrollWeight
     clickAuthPer = (isClickOutlier >= 0 and 1 or 0) * clicksWeight
     print('******Final Scores*************')
     print(pageAuthPer)
-    print(scrollAuthPer)
+    # print(scrollAuthPer)
     print(clickAuthPer)
 
-    totalScore = (pageAuthPer + scrollAuthPer + clickAuthPer)
+    totalScore = (pageAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
-
-    return jsonify({"totalScore": totalScore})
+    return jsonify({"totalScore": int(totalScore)})
 
 
 app.run(debug=True)

@@ -47,7 +47,7 @@ function postBlog() {
             
 	});
   	request.done(function( msg ) {
-		alert( "We are " + msg.totalScore + "% sure that you are a genuine user !!" );
+		alert( "UBA Score: " + msg.totalScore + "\n"+"KeyStroke Score: "+msg.keyStrokeScore);
                 window.location.href=window.location.href;
   	})
 	request.fail(function( jqXHR, textStatus ) {

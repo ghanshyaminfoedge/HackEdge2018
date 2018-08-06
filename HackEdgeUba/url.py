@@ -46,7 +46,7 @@ def writeTrainData(file_name, time_on_page, furthest_scroll_position, click_coun
 
 
 def saveKeyStrokeData(keyStrokeData, timeInSeconds):
-    db = mysql.connector.connect(user='root', password='root', database='keystroke_data')
+    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
     cur = db.cursor()
     x = json.loads(keyStrokeData, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
     for i in range(0, len(x) - 1, 1):
@@ -66,7 +66,7 @@ def saveKeyStrokeData(keyStrokeData, timeInSeconds):
 
 
 def testKeyStrokeHistory():
-    db = mysql.connector.connect(user='root', password='root', database='keystroke_data')
+    db = mysql.connector.connect(user='root', password='infoedge', database='keystroke_data')
     cur = db.cursor(buffered=True)
     min_cluster_siz = 4
     cur.execute("select key_combo from keystroke group by username, key_combo having count(*)>10;")
@@ -100,6 +100,8 @@ def testKeyStrokeHistory():
                 currentClusterCount = currentClusterCount + 1
         if currentClusterCount > 1:
             deviationCount = deviationCount + 1
+    if totalKeyComboAnalysing==0:
+            return 'NA';
     return (deviationCount * 100) / totalKeyComboAnalysing
 
 
@@ -218,7 +220,7 @@ def post():
         writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
 
-    return jsonify({"totalScore": 100, "keyStrokeScore": percentage})
+    return jsonify({"totalScore": totalScore, "keyStrokeScore": percentage})
 
 
 @app.route('/user/login', methods=["POST"])

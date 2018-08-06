@@ -102,7 +102,7 @@ def testKeyStrokeHistory():
             deviationCount = deviationCount + 1
     if totalKeyComboAnalysing==0:
             return 'NA';
-    return (deviationCount * 100) / totalKeyComboAnalysing
+    return 100 - ((deviationCount * 100) / totalKeyComboAnalysing)
 
 
 @app.route('/user', methods=["POST"])
@@ -247,7 +247,7 @@ def postLogin():
     print(furthest_scroll_position)
     print(click_count)
 
-    testDataFile = open("landingData.csv", 'rt')
+    testDataFile = open("loginData.csv", 'rt')
     trainData = csv.reader(testDataFile)
     pageTimeData = []
     scrollData = []
@@ -259,7 +259,7 @@ def postLogin():
         clicksData.append([int(row[2]), 1])
         counter += 1
     if counter < minimumSampleRequired:
-        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
         return jsonify({"totalScore": 100})
     pageTimeMean = statistics.mean([a for a, b in [m for m in pageTimeData]])
     scrollMean = statistics.mean([a for a, b in [m for m in scrollData]])
@@ -329,7 +329,7 @@ def postLogin():
     totalScore = (pageAuthPer + clickAuthPer)
 
     if (totalScore >= thresholdScore):
-        writeTrainData("landingData.csv", time_on_page, furthest_scroll_position, click_count)
+        writeTrainData("loginData.csv", time_on_page, furthest_scroll_position, click_count)
     testDataFile.close()
     return jsonify({"totalScore": int(totalScore)})
 

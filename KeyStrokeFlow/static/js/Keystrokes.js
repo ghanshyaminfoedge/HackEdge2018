@@ -21,9 +21,9 @@ $('#next, #login ').on('click', function() {
 });
 
 $("#autoFill").on('click',function(){
-	$("#username").val("sonakshi");	
-	$("#password").val("sonakshi");
-	$("#keyPhraseLog").val("sonakshi");
+	$("#username").val("ghanshyam");	
+	$("#password").val("ghanshyam");
+	$("#keyPhraseLog").val("ghanshyam");
 //	$("#ubaScore").val(10);
 	postLogin(function(result){
 		("#ubaScore").val(res.totalScore);
@@ -52,13 +52,19 @@ function markStepCompletion() {
 }
 
 function submitForm(){
-	$("#username").val("sonakshi");
-        $("#password").val("sonakshi");
-        $("#keyPhraseLog").val("sonakshi");
+        event.preventDefault();
+	$("#username").val("ghanshyam");
+        $("#password").val("ghanshyam");
+        $("#keyPhraseLog").val("ghanshyam");
 //      $("#ubaScore").val(10);
        	var res =  postLogin();
-       	$("#ubaScore").val(JSON.parse(res).totalScore);
-        $("#loginForm").submit();
+       	var ubaScore = JSON.parse(res).totalScore;
+        if(ubaScore < 70) {
+            event.preventDefault();
+            alert("Malicious login attempt! Score - " + ubaScore);
+        } else {
+            $("#loginForm").submit();
+        }
 }
 
 //

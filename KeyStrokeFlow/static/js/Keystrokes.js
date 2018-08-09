@@ -59,6 +59,7 @@ function submitForm(){
 //      $("#ubaScore").val(10);
        	var res =  postLogin();
        	var ubaScore = JSON.parse(res).totalScore;
+        console.log(ubaScore);
         if(ubaScore < 70) {
             event.preventDefault();
             alert("Malicious login attempt! Score - " + ubaScore);
